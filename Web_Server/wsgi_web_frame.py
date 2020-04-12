@@ -46,7 +46,7 @@ class WSGIServer():
                     # with open(r".\advanced\web服务器\html"+re_a,"rb") as f:
                     #         all_file= f.read()
                     # print(all_file)
-                    f = open(r".\html" + filename, "rb")
+                    f = open(r".\static" + filename, "rb")
 
                 except:
                     response = "HTTP/1.1 404 NOT FOUND\r\n"
@@ -68,6 +68,8 @@ class WSGIServer():
                 # 动态资源
 
                 env = dict()
+                env['PATH_INFO'] = filename
+
                 body = app.application(env, start_response=self.start_response)
 
                 header = "HTTP/1.1 %s\r\n" % self.status_code
@@ -105,4 +107,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    print('请从根目录下main.py运行')
