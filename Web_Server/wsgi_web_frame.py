@@ -8,12 +8,12 @@ import app
 
 
 class WSGIServer():
-    def __init__(self):
+    def __init__(self,port):
         # 创建套接字
         self.tcp_server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.tcp_server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         # 绑定套接字
-        self.tcp_server_socket.bind(("", 7890))
+        self.tcp_server_socket.bind(("", port))
         # 变为监听套接字
         self.tcp_server_socket.listen(128)
 
@@ -101,8 +101,8 @@ class WSGIServer():
             new_socket.close()  # 多线程不需要这个
 
 
-def main():
-    wsgi_server = WSGIServer()
+def main(port):
+    wsgi_server = WSGIServer(port)
     wsgi_server.run_forever()
 
 
