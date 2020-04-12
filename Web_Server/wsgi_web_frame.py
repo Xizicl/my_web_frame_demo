@@ -1,19 +1,29 @@
 # -*- coding: utf-8 -*-
+import json
 import socket
 import re
 import multiprocessing
-import time
 
-import app
+try:
+    from app_services import app
+except Exception as e:
+    print("请将app_services中放入app.py")
+    raise e
 
 
 class WSGIServer():
-    def __init__(self,port):
+    def __init__(self, port=8888, static_path='./static'):
+        # 设置默认配置
+
+        self.port = port
+        self.static_path = static_path  # 静态文件路径
+        self.load_config()
         # 创建套接字
+
         self.tcp_server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.tcp_server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         # 绑定套接字
-        self.tcp_server_socket.bind(("", port))
+        self.tcp_server_socket.bind(("", self.port))
         # 变为监听套接字
         self.tcp_server_socket.listen(128)
 
@@ -46,7 +56,8 @@ class WSGIServer():
                     # with open(r".\advanced\web服务器\html"+re_a,"rb") as f:
                     #         all_file= f.read()
                     # print(all_file)
-                    f = open(r".\static" + filename, "rb")
+
+                    f = open(self.static_path + filename, "rb")
 
                 except:
                     response = "HTTP/1.1 404 NOT FOUND\r\n"
@@ -69,7 +80,6 @@ class WSGIServer():
 
                 env = dict()
                 env['PATH_INFO'] = filename
-
                 body = app.application(env, start_response=self.start_response)
 
                 header = "HTTP/1.1 %s\r\n" % self.status_code
@@ -87,9 +97,28 @@ class WSGIServer():
         self.status_code = status_code
         self.headers = headers + [('server', 'Xizi_frame')]
 
+    def load_config(self):
+        try:
+            with open('./conf/config.conf') as f:
+                config_list = json.load(f)
+            print('config:', config_list)
+            if config_list:
+                static_path = config_list["static_path"]
+                port = config_list["port"]
+
+                self.port = port
+                self.static_path = static_path
+        except KeyError as e:
+            print('配置文件错误,按默认配置运行', e)
+        except Exception as e:
+            raise e
+        else:
+            return True
+
     def run_forever(self):
         """用来完成整体的控制"""
         print("Server is running with:http://{0}:{1}".format(*self.tcp_server_socket.getsockname()))
+        print("Server is running with:http://{0}:{1}".format('127.0.0.1', self.tcp_server_socket.getsockname()[1]))
         # http://localhost:7890/
         while True:
             # 等待新客户端的连接
@@ -101,8 +130,8 @@ class WSGIServer():
             new_socket.close()  # 多线程不需要这个
 
 
-def main(port):
-    wsgi_server = WSGIServer(port)
+def main():
+    wsgi_server = WSGIServer()
     wsgi_server.run_forever()
 
 
