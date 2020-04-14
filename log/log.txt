@@ -1,0 +1,8 @@
+WebServer: 175 - 2020-04-14 16:37:46,603 - wsgi_web.py[wsgi_web.py -> (funcName)s -> line:175] - INFO: Server is running with:http://0.0.0.0:7788
+WebServer: 175 - 2020-04-14 16:37:46,603 - wsgi_web.py[wsgi_web.py -> (funcName)s -> line:175] - INFO: Server is running with:http://127.0.0.1:7788
+WebServer: 176 - 2020-04-14 16:57:12,983 - wsgi_web.py[wsgi_web.py -> (funcName)s -> line:176] - INFO: Server is running with:http://0.0.0.0:7788
+WebServer: 176 - 2020-04-14 16:57:12,983 - wsgi_web.py[wsgi_web.py -> (funcName)s -> line:176] - INFO: Server is running with:http://127.0.0.1:7788
+WebServer: 177 - 2020-04-14 16:58:50,604 - wsgi_web.py[wsgi_web.py -> (funcName)s -> line:177] - INFO: Server is running with:http://0.0.0.0:7788
+WebServer: 177 - 2020-04-14 16:58:50,605 - wsgi_web.py[wsgi_web.py -> (funcName)s -> line:177] - INFO: Server is running with:http://127.0.0.1:7788
+WebServer: 177 - 2020-04-14 16:59:19,644 - wsgi_web.py[wsgi_web.py -> (funcName)s -> line:177] - INFO: Server is running with:http://0.0.0.0:7788
+WebServer: 177 - 2020-04-14 16:59:19,644 - wsgi_web.py[wsgi_web.py -> (funcName)s -> line:177] - INFO: Server is running with:http://127.0.0.1:7788

@@ -4,6 +4,8 @@ import socket
 import re
 import multiprocessing
 
+import time
+
 try:
     from app_services import app
 except Exception as e:
@@ -18,6 +20,7 @@ class WSGIServer():
         self.port = port
         self.static_path = static_path  # 静态文件路径
         self.load_config()
+
         # 创建套接字
 
         self.tcp_server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -47,11 +50,12 @@ class WSGIServer():
             filename = re_a.group(1)
             # re_a = re.match(r"[^/]+/[^ ]*",request_line[0])
             # print('{0}{1}'.format(request_.split('\r\n'),filename))
+
             print(filename)
-            if not filename.endswith('.py'):
+            if filename == "/":
+                filename = "/index.html"
+            if not filename.endswith('.html'):
                 # 静态资源
-                if filename == "/":
-                    filename = "/index.html"
                 try:
                     # with open(r".\advanced\web服务器\html"+re_a,"rb") as f:
                     #         all_file= f.read()
@@ -90,6 +94,7 @@ class WSGIServer():
                 response = header + body
                 new_socket.send(response.encode('utf-8'))
         else:
+            # self.log('info', 'request:' + request_ + 'maybe the client is closed')
             print('request:' + request_ + 'maybe the client is closed')
         new_socket.close()
 
@@ -101,6 +106,7 @@ class WSGIServer():
         try:
             with open('./conf/config.conf') as f:
                 config_list = json.load(f)
+            # self.log('info',('config:', config_list))
             print('config:', config_list)
             if config_list:
                 static_path = config_list["static_path"]
@@ -109,6 +115,7 @@ class WSGIServer():
                 self.port = port
                 self.static_path = static_path
         except KeyError as e:
+
             print('配置文件错误,按默认配置运行', e)
         except Exception as e:
             raise e
@@ -128,6 +135,7 @@ class WSGIServer():
             # service_client(new_socket)
             p.start()
             new_socket.close()  # 多线程不需要这个
+
 
 
 def main():
