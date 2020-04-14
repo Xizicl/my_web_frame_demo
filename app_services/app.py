@@ -2,6 +2,8 @@ import re
 import time
 import pymysql
 
+import logging
+
 URl_FUNC_DICT = dict()
 
 
@@ -92,7 +94,34 @@ def add_focus(temp):
     return 'add_ok1{0}'.format(temp)
 
 
+def get_logger():
+    # 第一步，创建一个logger
+    logger = logging.getLogger()
+    logger.setLevel(logging.INFO)  # Log等级总开关
+
+    # 第二步，创建一个handler，用于写入日志文件
+    logfile = './log.txt'
+    fh = logging.FileHandler(logfile, mode='a')  # open的打开模式这里可以进行参考
+    fh.setLevel(logging.DEBUG)  # 输出到file的log等级的开关
+
+    # 第三步，再创建一个handler，用于输出到控制台
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.WARNING)  # 输出到console的log等级的开关
+
+    # 第四步，定义handler的输出格式
+    formatter = logging.Formatter("%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s")
+    fh.setFormatter(formatter)
+    ch.setFormatter(formatter)
+
+    # 第五步，将logger添加到handler里面
+    logger.addHandler(fh)
+    logger.addHandler(ch)
+    return logger
+
+
 def application(environ, start_response):
+    logger = get_logger()
+
     start_response('200 OK', [('Content-Type', 'text/html;charset=UTF-8')])
 
     filename = environ['PATH_INFO']
@@ -116,10 +145,12 @@ def application(environ, start_response):
             if ret:
                 return func()
         else:
-            print('路由错误：找不到:', filename)
+            logger.info('路由错误：找不到:', filename)
+            # print('路由错误：找不到:', filename)
             return '500 Server Error ' + str(filename) + '<h2>页面不见了。。。可能是被吃掉了</h2>'
     except Exception as e:
-        print('捕捉到了个异常：', e)
+        logger.info('捕捉到了个异常：', e)
+        # print('捕捉到了个异常：', e)
         # raise e
         return '500 Server Error<\br><h2>页面不见了。。。可能是被吃掉了</h2><\br>%s' % str(e)
 
